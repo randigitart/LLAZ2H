@@ -22,8 +22,8 @@ kv_t * kv_init(size_t capacity) {
 	return table;
 }
 
-int kv_free(kv_t * table) {
+void kv_free(kv_t * table) {
 	free(table->entries);
 	free(table);
-	return 0;
+	return;
 }
