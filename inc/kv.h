@@ -21,8 +21,8 @@ kv_t * kv_init(size_t capacity);
 
 /*kv_put(kv_t*, char*, char*)
 	stores or updates a key-value pair in provided table
-	returns index of stored value; upon error, -1; if table is at capacity, -2 */
-int kv_put(kv_t * table, char * key, char * value);
+	returns 0 on success; upon error, -1; if table is at capacity, -2 */
+int kv_put(kv_t * table, const char * key, const char * value);
 
 /*kv_free(kv_t*)
 	frees all allocated memory of a table*/

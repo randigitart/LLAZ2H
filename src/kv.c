@@ -3,7 +3,7 @@
 
 #define TOMBSTONE 0x1
 
-size_t hash(char *, int);
+size_t hash(const char *, int);
 
 kv_t * kv_init(size_t capacity) {
 	if(capacity == 0) {
@@ -27,7 +27,7 @@ kv_t * kv_init(size_t capacity) {
 	return table;
 }
 
-int kv_put(kv_t * table, char * key, char * value) {
+int kv_put(kv_t * table, char const * key, char const * value) {
 	if(!table || !key || !value) return -1;
 	
 	size_t index = hash(key, table->capacity);
@@ -43,7 +43,7 @@ int kv_put(kv_t * table, char * key, char * value) {
 		 	if(!newval) return -1;
 		 	free(entry->value);
 		 	entry->value = newval;
-		 	return real_index;
+		 	return 0;
 		 }
 		 //entry at index empty; add new entry
 		 if(!entry->key) {
@@ -57,7 +57,7 @@ int kv_put(kv_t * table, char * key, char * value) {
 		 	entry->key = newkey;
 		 	entry->value = newval;
 		 	table->count++;
-		 	return real_index;
+		 	return 0;
 		 }
 		 //entry is TOMBSTONE
 		 if(entry->key== (void*)TOMBSTONE && empty_index==-1) {
@@ -77,7 +77,7 @@ int kv_put(kv_t * table, char * key, char * value) {
 		entry->key = newkey;
 		entry->value = newval;
 		table->count++;
-		return empty_index;
+		return 0;
 	}
 	
 	//table at capacity
@@ -101,7 +101,7 @@ void kv_free(kv_t * table) {
 	return;
 }
 
-size_t hash(char *val, int capacity) {
+size_t hash(const char *val, int capacity) {
 	size_t hash = 0x13371337deadbeef;
 	
 	while(*val) {
