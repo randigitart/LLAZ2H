@@ -1,6 +1,7 @@
 #include <kv.h>
 #include <string.h>
 
+#define TOMBSTONE 0x1
 
 size_t hash(char *, int);
 
@@ -36,8 +37,8 @@ int kv_put(kv_t * table, char * key, char * value) {
 		 size_t real_index = (index + i) % table->capacity;
 		 kv_entry_t * entry = &table->entries[real_index];
 		 
-		 //key already set; update
-		 if(entry->key && entry->key!=TOMBSTONE && !strcmp(entry->key, key)) {
+		 //key already set; update 
+		 if(entry->key && entry->key!= (void*)TOMBSTONE && !strcmp(entry->key, key)) {
 		 	char* newval = strdup(value);
 		 	if(!newval) return -1;
 		 	free(entry->value);
@@ -59,7 +60,7 @@ int kv_put(kv_t * table, char * key, char * value) {
 		 	return real_index;
 		 }
 		 //entry is TOMBSTONE
-		 if(entry->key==TOMBSTONE && empty_index==-1) {
+		 if(entry->key== (void*)TOMBSTONE && empty_index==-1) {
 		 	empty_index=real_index;
 		 }
 	}
@@ -67,16 +68,16 @@ int kv_put(kv_t * table, char * key, char * value) {
 	if(empty_index != -1) {
 		kv_entry_t * entry = &table->entries[empty_index];
 		char* newkey = strdup(key);
-		 	char* newval = strdup(value);
-		 	if(!newkey || !newval) {
-		 		free(newkey);
-		 		free(newval);
-			 	return -1;
-			}
-		 	entry->key = newkey;
-		 	entry->value = newval;
-		 	table->count++;
-		 	return (size_t)real_index;
+		char* newval = strdup(value);
+		if(!newkey || !newval) {
+			free(newkey);
+			free(newval);
+		 	return -1;
+		}
+		entry->key = newkey;
+		entry->value = newval;
+		table->count++;
+		return empty_index;
 	}
 	
 	//table at capacity
@@ -85,6 +86,14 @@ int kv_put(kv_t * table, char * key, char * value) {
 }
 
 void kv_free(kv_t * table) {
+	for(int i = 0; i < table->capacity; i++) {
+		if(table->entries[i].key != NULL) {
+			free(table->entries[i].key);
+			free(table->entries[i].value);
+			table->entries[i].key = NULL;
+			table->entries[i].value=NULL;
+		}
+	}
 	free(table->entries);
 	table->entries = NULL;
 	free(table);
@@ -97,7 +106,7 @@ size_t hash(char *val, int capacity) {
 	
 	while(*val) {
 		hash ^= *val;
-		hash << 8;
+		hash = hash << 8;
 		hash += *val;
 		
 		val++;
