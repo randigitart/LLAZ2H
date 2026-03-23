@@ -109,6 +109,7 @@ char * kv_get(kv_t * db, const char* key ){
 
 int kv_delete(kv_t * db, const char* key) {
 	if(!db || !key) return -1;
+	
 	size_t index = hash(key, db->capacity);
 	
 	for(int i = 0; i < db->capacity; i++) {
@@ -116,21 +117,24 @@ int kv_delete(kv_t * db, const char* key) {
 		
 		kv_entry_t * entry = &db->entries[real_index];
 		
+		//uninitialized entry, provided key not in table
 		if(!entry->key) {
 			return -1;
 		}
 		
+		//provided key found, remove
 		if(entry->key && entry->key != (void*)TOMBSTONE && !strcmp(entry->key, key)) {
 			free(entry->key);
 			free(entry->value);
 			entry->value = NULL;
-			entry->key = (void*)TOMBSTONE;
+			entry->key = (void*) TOMBSTONE;
 			db->count -= 1;
 			return 0;
 		}
 		
 	}
 	
+	//entire database searched, key not found
 	return -1;
 }
 
