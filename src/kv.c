@@ -107,6 +107,33 @@ char * kv_get(kv_t * db, const char* key ){
 	return NULL;
 }
 
+int kv_delete(kv_t * db, const char* key) {
+	if(!db || !key) return -1;
+	size_t index = hash(key, db->capacity);
+	
+	for(int i = 0; i < db->capacity; i++) {
+		size_t real_index = (index + i) % db->capacity;
+		
+		kv_entry_t * entry = &db->entries[real_index];
+		
+		if(!entry->key) {
+			return -1;
+		}
+		
+		if(entry->key && entry->key != (void*)TOMBSTONE && !strcmp(entry->key, key)) {
+			free(entry->key);
+			free(entry->value);
+			entry->value = NULL;
+			entry->key = (void*)TOMBSTONE;
+			db->count -= 1;
+			return 0;
+		}
+		
+	}
+	
+	return -1;
+}
+
 void kv_free(kv_t * table) {
 	for(int i = 0; i < table->capacity; i++) {
 		if(table->entries[i].key != NULL) {

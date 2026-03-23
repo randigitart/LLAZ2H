@@ -31,5 +31,11 @@ int main(int argv, char* argc[]) {
 	assert(strcmp(kv_get(db, keys[3]), val4) == 0);
 	assert(kv_get(db, "missing") == NULL);
 	
+	assert(kv_delete(db, keys[0]) == 0);
+	assert(kv_get(db, "name") == NULL);
+	assert(db->count == 3);
+	
+	kv_free(db);
+	
 	return 0;
 }

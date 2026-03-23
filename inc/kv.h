@@ -24,7 +24,15 @@ kv_t * kv_init(size_t capacity);
 	returns 0 on success; upon error, -1; if table is at capacity, -2 */
 int kv_put(kv_t * table, const char * key, const char * value);
 
+/*kv_get(kv_t*,const char*)
+	retrieves the value corresponding to the provided key in a database
+	returns pointer to value, if found; else NULL */
 char * kv_get(kv_t * db, const char* key);
+
+/*kv_delete(kv_t*, const char*)
+	deletes key/value entry in table; frees stored key/value and adds TOMBSTONE
+	returns 0 upon succed; -1 upon error*/
+int kv_delete(kv_t * db, const char* key);
 
 /*kv_free(kv_t*)
 	frees all allocated memory of a table*/
