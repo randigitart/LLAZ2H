@@ -118,7 +118,7 @@ int kv_delete(kv_t * db, const char* key) {
 		kv_entry_t * entry = &db->entries[real_index];
 		
 		//uninitialized entry, provided key not in table
-		if(!entry->key) {
+		if(!(entry->key)) {
 			return -1;
 		}
 		
