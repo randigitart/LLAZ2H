@@ -86,6 +86,9 @@ int kv_put(kv_t * table, char const * key, char const * value) {
 }
 
 char * kv_get(kv_t * db, const char* key ){
+	
+	if(!db || !key) return NULL;
+	
 	size_t start_index = hash(key, db->capacity);
 	
 	for(int i = 0; i < db->capacity; i++) {
