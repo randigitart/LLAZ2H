@@ -16,13 +16,15 @@ typedef struct {
 } kv_t;
 
 /*kv_init(size_t)
-	returns a pointer to 0 initialized kv_t of capacity size_t */
+	returns a pointer to a 0 initialized database of capacity size_t */
 kv_t * kv_init(size_t capacity);
 
 /*kv_put(kv_t*, char*, char*)
-	stores or updates a key-value pair in provided table
+	stores or updates a key-value pair in provided database
 	returns 0 on success; upon error, -1; if table is at capacity, -2 */
 int kv_put(kv_t * table, const char * key, const char * value);
+
+char * kv_get(kv_t * db, const char* key);
 
 /*kv_free(kv_t*)
 	frees all allocated memory of a table*/

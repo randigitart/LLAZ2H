@@ -54,15 +54,15 @@ int kv_put(kv_t * table, char const * key, char const * value) {
 		 		free(newval);
 			 	return -1;
 			}
-		 	entry->key = newkey;
+			entry->key = newkey;
 		 	entry->value = newval;
 		 	table->count++;
 		 	return 0;
-		 }
-		 //entry is TOMBSTONE
-		 if(entry->key== (void*)TOMBSTONE && empty_index==-1) {
+		}
+		//entry is TOMBSTONE
+		if(entry->key== (void*)TOMBSTONE && empty_index==-1) {
 		 	empty_index=real_index;
-		 }
+		}
 	}
 	
 	if(empty_index != -1) {
@@ -83,6 +83,25 @@ int kv_put(kv_t * table, char const * key, char const * value) {
 	//table at capacity
 	return -2;
 	
+}
+
+char * kv_get(kv_t * db, const char* key ){
+	size_t start_index = hash(key, db->capacity);
+	
+	for(int i = 0; i < db->capacity; i++) {
+		size_t real_index = (start_index + i) % db->capacity;
+		kv_entry_t * entry = &db->entries[real_index];
+		
+		if(!entry->key) {
+			return NULL;
+		}
+		
+		if(entry->key && entry->key!= (void*)TOMBSTONE && !strcmp(entry->key, key)) {
+			return entry->value;
+		}
+	}
+	
+	return NULL;
 }
 
 void kv_free(kv_t * table) {
