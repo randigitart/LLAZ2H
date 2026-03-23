@@ -92,7 +92,7 @@ char * kv_get(kv_t * db, const char* key ){
 		size_t real_index = (start_index + i) % db->capacity;
 		kv_entry_t * entry = &db->entries[real_index];
 		
-		if(!entry->key) {
+		if(!(entry->key)) {
 			return NULL;
 		}
 		

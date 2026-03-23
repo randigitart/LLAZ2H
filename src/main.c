@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 
 #include <kv.h>
 
@@ -26,7 +27,9 @@ int main(int argv, char* argc[]) {
 	for(int i = 0; i < 4; i++) {
 		printf("%s: %s\n", keys[i], kv_get(db, keys[i]));
 	}
-
+	
+	assert(strcmp(kv_get(db, keys[3]), val4) == 0);
+	assert(kv_get(db, "missing") == NULL);
 	
 	return 0;
 }
