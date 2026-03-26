@@ -59,7 +59,6 @@ int kv_put(kv_t * table, char const * key, char const * value) {
 			entry->key = newkey;
 		 	entry->value = newval;
 		 	table->count++;
-printf("?%ld:%s/n", real_index, newval);
 		 	return 0;
 		}
 		//entry is TOMBSTONE
@@ -80,7 +79,6 @@ printf("?%ld:%s/n", real_index, newval);
 		entry->key = newkey;
 		entry->value = newval;
 		table->count++;
-printf("?%d:%s/n", empty_index, newval);
 		return 0;
 	}
 	
@@ -143,12 +141,13 @@ int kv_delete(kv_t * db, const char* key) {
 }
 
 void kv_free(kv_t * table) {
-	printf("!kv_free\n");
 	if(!table)return;
 	for(int i = 0; i < table->capacity; i++) {
 		kv_entry_t *  entry = &table->entries[i];
 		if(entry->key && entry->key != (void *) TOMBSTONE) {
-			kv_delete(table, entry->key);
+			free(entry->key);
+			free(entry->value);
+			entry->value = NULL;
 			entry->key = NULL;
 		}
 	}

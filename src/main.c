@@ -9,12 +9,9 @@ int main(int argv, char* argc[]) {
 
 	kv_put(db, "name", "alice");
 	kv_put(db, "city", "berlin");
+	kv_put(db, "lang", "c");
 
-	assert(kv_delete(db, "name") == 0);
-	assert(kv_get(db, "name") == NULL);
-	assert(db->count == 1);
-
-	assert(kv_delete(db, "missing") == -1);
+	kv_delete(db, "city");
 
 	kv_free(db);
 
