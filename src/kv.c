@@ -45,7 +45,6 @@ int kv_put(kv_t * table, char const * key, char const * value) {
 		 	if(!newval) return -1;
 		 	free(entry->value);
 		 	entry->value = newval;
-printf("?%ld:%s/n", real_index, newval);
 		 	return 0;
 		 }
 		 //entry at index empty; add new entry
@@ -147,21 +146,15 @@ void kv_free(kv_t * table) {
 	printf("!kv_free\n");
 	if(!table)return;
 	for(int i = 0; i < table->capacity; i++) {
-		printf("!%d entry in db\n", i);
 		kv_entry_t *  entry = &table->entries[i];
-		if(entry->key) {
-			free(entry->key);
-			free(entry->value);
+		if(entry->key && entry->key != (void *) TOMBSTONE) {
+			kv_delete(table, entry->key);
 			entry->key = NULL;
-			entry->value=NULL;
 		}
 	}
-	printf("!key/vals freed/n");
 	free(table->entries);
 	table->entries = NULL;
-	printf("!entries freed/n");
 	free(table);
-	printf("!table freed/n");
 	return;
 }
 
